@@ -4,8 +4,8 @@ public class CreditCardForm {
 
 	private String ime;
 	private String prezime;
-	private int brojKartice;
-	private int sigurnosniBroj;
+	private String brojKartice;
+	private String sigurnosniBroj;
 	private long user;
 	
 	
@@ -21,16 +21,16 @@ public class CreditCardForm {
 	public void setPrezime(String prezime) {
 		this.prezime = prezime;
 	}
-	public int getBrojKartice() {
+	public String getBrojKartice() {
 		return brojKartice;
 	}
-	public void setBrojKartice(int brojKartice) {
+	public void setBrojKartice(String brojKartice) {
 		this.brojKartice = brojKartice;
 	}
-	public int getSigurnosniBroj() {
+	public String getSigurnosniBroj() {
 		return sigurnosniBroj;
 	}
-	public void setSigurnosniBroj(int sigurnosniBroj) {
+	public void setSigurnosniBroj(String sigurnosniBroj) {
 		this.sigurnosniBroj = sigurnosniBroj;
 	}
 	public long getUser() {

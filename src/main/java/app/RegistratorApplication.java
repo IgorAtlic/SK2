@@ -16,7 +16,8 @@ public class RegistratorApplication {
 
 	@Autowired
 	private AdminRepository adminRepo;
-	
+	@Autowired
+	private BCryptPasswordEncoder encoder;
 	@Bean
 	public static BCryptPasswordEncoder encoder() {
 		return new BCryptPasswordEncoder(10);
@@ -28,7 +29,7 @@ public class RegistratorApplication {
 
 	@EventListener(ApplicationReadyEvent.class)
 	private void addAdmin() {
-		Admin admin = new Admin("Admin","12345678");
+		Admin admin = new Admin("Admin",encoder.encode("12345678"));
 		adminRepo.saveAndFlush(admin);
 	}
 	

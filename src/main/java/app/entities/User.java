@@ -18,7 +18,8 @@ public class User {
 	private String password;
 	private int brjPasosa;
 	private String rank = "Bronza";
-
+	private int milje = 0;
+	
 	public User() {
 
 	}
@@ -30,6 +31,23 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.brjPasosa = brjPasosa;
+	}
+
+	
+	public String getRank() {
+		return rank;
+	}
+
+	public void setRank(String rank) {
+		this.rank = rank;
+	}
+
+	public int getMilje() {
+		return milje;
+	}
+
+	public void setMilje(int milje) {
+		this.milje = milje;
 	}
 
 	public long getId() {

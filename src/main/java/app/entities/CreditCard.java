@@ -14,10 +14,16 @@ public class CreditCard {
 	private long user;
 	private String ime;
 	private String prezime;
-	private int brojKartice;
-	private int sigurnosniBroj;
+	private String brojKartice;
+	private String sigurnosniBroj;
 	
-	public CreditCard(String ime, String prezime, int brojKartice, int sigurnosniBroj,long user) {
+	
+	public CreditCard() {
+		
+		
+	}
+	
+	public CreditCard(String ime, String prezime, String brojKartice, String sigurnosniBroj,long user) {
 		super();
 		this.ime = ime;
 		this.prezime = prezime;
@@ -43,16 +49,16 @@ public class CreditCard {
 	public void setPrezime(String prezime) {
 		this.prezime = prezime;
 	}
-	public int getBrojKartice() {
+	public String getBrojKartice() {
 		return brojKartice;
 	}
-	public void setBrojKartice(int brojKartice) {
+	public void setBrojKartice(String brojKartice) {
 		this.brojKartice = brojKartice;
 	}
-	public int getSigurnosniBroj() {
+	public String getSigurnosniBroj() {
 		return sigurnosniBroj;
 	}
-	public void setSigurnosniBroj(int sigurnosniBroj) {
+	public void setSigurnosniBroj(String sigurnosniBroj) {
 		this.sigurnosniBroj = sigurnosniBroj;
 	}
 	public long getUser() {

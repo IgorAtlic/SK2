@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import app.entities.Admin;
 import app.entities.CreditCard;
 import app.entities.User;
+import app.forms.ChangeForm;
 import app.forms.CreditCardForm;
 import app.forms.RegistrationForm;
 import app.repository.AdminRepository;
@@ -56,7 +58,7 @@ public class Controller {
 			User user = new User(registrationForm.getIme(), registrationForm.getPrezime(), registrationForm.getEmail(),
 					encoder.encode(registrationForm.getPassword()),registrationForm.getBrjPasosa());
 			
-			emailController.sendEmail(registrationForm.getEmail(), "Servis1", "Hvala sto ste koristili nasu aplikaciju");
+			//emailController.sendEmail(registrationForm.getEmail(), "Servis1", "Hvala sto ste koristili nasu aplikaciju");
 
 			// cuvamo u nasoj bazi ovaj entitet
 			userRepo.saveAndFlush(user);	        
@@ -82,8 +84,6 @@ public class Controller {
 			// iscitavamo entitet iz registracione forme
 			CreditCard card = new CreditCard(creditCardForm.getIme(), creditCardForm.getPrezime(), creditCardForm.getBrojKartice(), creditCardForm.getSigurnosniBroj(), user.getId());
 			
-
-			// cuvamo u nasoj bazi ovaj entitet
 			cardRepo.saveAndFlush(card);	        
 
 			return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
@@ -105,7 +105,12 @@ public class Controller {
 			
 			
 			User user = userRepo.findByEmail(email);
-			return new ResponseEntity<>(user.getIme() + " " + user.getPrezime(), HttpStatus.ACCEPTED);
+			if (user == null) {
+				Admin admin = adminRepo.findByUsername(email);
+				return new ResponseEntity<>(admin.getUsername(), HttpStatus.ACCEPTED);
+			}
+			String tem = user.getIme() + "/"+ user.getPrezime() + "/"+ user.getEmail() + "/" + user.getBrjPasosa()+ "/" + user.getRank() +"/"+ user.getMilje();
+			return new ResponseEntity<>(tem, HttpStatus.ACCEPTED);
 			
 
 			
@@ -148,6 +153,39 @@ public class Controller {
 			}
 			userRepo.saveAndFlush(user);	        
 			return new ResponseEntity<>(user.getIme() + " " + user.getPrezime(), HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping("/addMile")
+	public ResponseEntity<String> changeUser(@RequestBody ChangeForm changeForm, @RequestHeader(value = HEADER_STRING) String token) {
+		try {
+
+			// izvlacimo iz tokena subject koj je postavljen da bude email
+			String email = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
+					.verify(token.replace(TOKEN_PREFIX, "")).getSubject();
+
+			User user = userRepo.findByEmail(email);
+			
+			String rank = user.getRank();
+			if (changeForm.getMilje() != 0){
+				
+				user.setMilje(changeForm.getMilje() + user.getMilje());
+				
+				if (rank != "Zlato") {
+					if (user.getMilje() > 10000) {
+						user.setRank("Zlato");
+					}else if(user.getMilje() > 1000) {
+						
+						user.setRank("Srebro");
+					}
+					
+				}
+			}
+			userRepo.saveAndFlush(user);	        
+			return new ResponseEntity<>(user.getIme() + " " + user.getRank(), HttpStatus.ACCEPTED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

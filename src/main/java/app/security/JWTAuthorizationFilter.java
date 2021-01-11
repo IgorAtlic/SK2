@@ -20,6 +20,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import app.repository.AdminRepository;
 import app.repository.UserRepository;
 
 /**
@@ -29,11 +30,13 @@ import app.repository.UserRepository;
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
 	private UserRepository userRepo;
+	private AdminRepository adminRepo;
 
 	@Autowired
-	public JWTAuthorizationFilter(AuthenticationManager authManager, UserRepository userRepo) {
+	public JWTAuthorizationFilter(AuthenticationManager authManager, UserRepository userRepo, AdminRepository adminRepo) {
 		super(authManager);
 		this.userRepo = userRepo;
+		this.adminRepo = adminRepo;
 	}
 
 	@Override
@@ -51,22 +54,25 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request, String token) {
 
 		if (token != null) {
+			
 			// parsiranje tokena
 			DecodedJWT jwt = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build()
 					.verify(token.replace(TOKEN_PREFIX, ""));
 
 			// subject je email od korisnika i spakovan je u JWT
 			String email = jwt.getSubject();
-
 			// Provera da li se nalazi user u bazi
-			if (userRepo.existsByEmail(email) == false) {
+			if (userRepo.existsByEmail(email) == false && adminRepo.findByUsername(email) == null) {
 				return null;
 			}
 
 			if (email != null) {
+
 				return new UsernamePasswordAuthenticationToken(email, null, new ArrayList<>());
 			}
+
 			return null;
+
 		}
 		return null;
 	}

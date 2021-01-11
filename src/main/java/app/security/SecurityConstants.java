@@ -2,7 +2,7 @@ package app.security;
 
 public final class SecurityConstants {
 
-	public static final String SECRET = "mySecretKey";
+	public static final String SECRET = "Projekat2SecretKey";
 
 	public static final long TOKEN_EXPIRATION_TIME = 86400000;
 	public static final String TOKEN_PREFIX = "Basic ";
