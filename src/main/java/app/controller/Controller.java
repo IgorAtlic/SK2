@@ -4,6 +4,8 @@ import static app.security.SecurityConstants.HEADER_STRING;
 import static app.security.SecurityConstants.SECRET;
 import static app.security.SecurityConstants.TOKEN_PREFIX;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -109,7 +111,15 @@ public class Controller {
 				Admin admin = adminRepo.findByUsername(email);
 				return new ResponseEntity<>(admin.getUsername(), HttpStatus.ACCEPTED);
 			}
+			
+			ArrayList<CreditCard> card = cardRepo.findByUser(user.getId());
+			
 			String tem = user.getIme() + "/"+ user.getPrezime() + "/"+ user.getEmail() + "/" + user.getBrjPasosa()+ "/" + user.getRank() +"/"+ user.getMilje();
+			
+			for (CreditCard c :card) {
+				
+				tem = tem +"/"+ c.getBrojKartice();
+			}
 			return new ResponseEntity<>(tem, HttpStatus.ACCEPTED);
 			
 
